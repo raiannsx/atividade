@@ -1,0 +1,60 @@
+#include <stdio.h>
+
+// Definição das constantes
+#define LIMITE_CREDITO_NOVO_CLIENTE 500
+#define DESCONTO_CLIENTE_FIEL 0.1 // 10% de desconto para clientes fiéis
+#define COMPRAS_MINIMAS_CLIENTE_FIEL 5
+#define MESES_PARA_LIMITE_CREDITO 3
+
+// Função para calcular o valor final da compra
+float calcularValorFinal(float valorCompra, int clienteFiel, int comprasUltimosMeses, int mesesAtivo) {
+    float valorFinal = valorCompra;
+
+    // Aplicar desconto para cliente fiel, se aplicável
+    if (clienteFiel && comprasUltimosMeses >= COMPRAS_MINIMAS_CLIENTE_FIEL) {
+        valorFinal -= valorCompra * DESCONTO_CLIENTE_FIEL;
+    }
+
+    // Verificar se um novo cliente ultrapassou o limite de crédito
+    if (!clienteFiel && mesesAtivo <= MESES_PARA_LIMITE_CREDITO && valorFinal > LIMITE_CREDITO_NOVO_CLIENTE) {
+        printf("Limite de crédito excedido para novo cliente!\n");
+        return -1; // Retorna -1 indicando erro de limite de crédito excedido
+    }
+
+    return valorFinal;
+}
+
+int main() {
+    float valorCompra;
+    int clienteFiel, comprasUltimosMeses, mesesAtivo;
+
+    printf("Digite o valor da compra: ");
+    scanf("%f", &valorCompra);
+
+    printf("O cliente é fiel? (1 para sim, 0 para não): ");
+    scanf("%d", &clienteFiel);
+
+    // Se o cliente for fiel, solicitar o número de compras nos últimos meses
+    if (clienteFiel) {
+        printf("Digite o número de compras nos últimos 6 meses: ");
+        scanf("%d", &comprasUltimosMeses);
+    } else {
+        comprasUltimosMeses = 0;
+    }
+
+    // Se o cliente for novo, solicitar o número de meses como cliente ativo
+    if (!clienteFiel) {
+        printf("Digite o número de meses como cliente ativo: ");
+        scanf("%d", &mesesAtivo);
+    } else {
+        mesesAtivo = 0;
+    }
+
+    float valorFinal = calcularValorFinal(valorCompra, clienteFiel, comprasUltimosMeses, mesesAtivo);
+
+    if (valorFinal != -1) {
+        printf("O valor final da compra é: %.2f\n", valorFinal);
+    }
+
+    return 0;
+}
